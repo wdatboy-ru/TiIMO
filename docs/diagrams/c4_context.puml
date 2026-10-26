@@ -1,0 +1,21 @@
+@startuml c4_context
+!include <C4/C4_Context>
+skinparam defaultFontName Arial
+LAYOUT_TOP_DOWN()
+HIDE_STEREOTYPE()
+
+Person(analyst, "HR-аналитик", "Формирует зарплатные вилки, следит за рынком")
+Person(dev, "ИТ-специалист", "Хочет оценить свой доход по профилю")
+Person(eng, "Инженер данных / ML-инженер", "Загружает порции, переобучает модель")
+
+System(sys, "Система анализа факторов дохода ИТ-специалистов", "Проверяет и обрабатывает анкеты, выделяет главные компоненты, считает ключевые показатели")
+
+System_Ext(so, "Stack Overflow Developer Survey", "Анкеты разработчиков, CSV, лицензия ODbL")
+System_Ext(hh, "API hh.ru", "Вакансии с зарплатой (дополнительный источник, позже)")
+
+Rel(so, sys, "Порции анкет", "CSV")
+Rel(hh, sys, "Вакансии", "HTTPS, JSON")
+Rel(eng, sys, "Загружает порцию, запускает пайплайн, смотрит отчёты качества")
+Rel(analyst, sys, "Смотрит показатели и вклад факторов", "браузер")
+Rel(dev, sys, "Запрашивает оценку дохода", "HTTPS, JSON")
+@enduml

@@ -1,0 +1,35 @@
+@startuml c4_container
+!include <C4/C4_Container>
+skinparam defaultFontName Arial
+HIDE_STEREOTYPE()
+
+Person(analyst, "HR-аналитик")
+Person(dev, "ИТ-специалист")
+Person(eng, "Инженер данных")
+System_Ext(so, "Stack Overflow Developer Survey", "CSV")
+
+System_Boundary(sys, "Система анализа факторов дохода") {
+  Container(ingest, "Приём порций", "Python, DVC", "Кладёт порцию в data/incoming, считает md5, обновляет манифест")
+  ContainerDb(store, "Хранилище данных", "CSV/Parquet под DVC, remote: локальный / S3", "Сырые данные, порции, таблицы признаков")
+  Container(pipe, "Пайплайн подготовки", "DVC pipeline, pandas, pandera", "Проверка качества, очистка, признаки")
+  Container(ml, "ML-модуль", "scikit-learn, joblib", "StandardScaler + PCA + регрессия log-дохода")
+  ContainerDb(mlflow, "Реестр моделей", "MLflow", "Версии моделей, параметры, метрики")
+  Container(kpi, "Расчёт показателей", "Python", "Пересчёт KPI по каждой порции")
+  ContainerDb(mart, "Витрина показателей", "SQLite", "KPI по порциям, нагрузки компонент")
+  Container(dash, "Панель", "Streamlit", "Текущие значения и динамика KPI")
+  Container(api, "API", "FastAPI", "Оценка дохода и компоненты по профилю")
+}
+
+Rel(so, ingest, "Новая порция", "CSV")
+Rel(eng, ingest, "dvc repro")
+Rel(ingest, store, "Сохраняет порцию")
+Rel(pipe, store, "Читает порцию, пишет признаки")
+Rel(pipe, ml, "Таблица признаков")
+Rel(ml, mlflow, "Регистрирует модель / загружает текущую")
+Rel(ml, kpi, "Прогнозы и значения компонент")
+Rel(kpi, mart, "Пишет KPI")
+Rel(dash, mart, "Читает KPI", "SQL")
+Rel(analyst, dash, "Смотрит", "HTTPS")
+Rel(dev, api, "Профиль", "HTTPS, JSON")
+Rel(api, mlflow, "Загружает модель")
+@enduml

@@ -1,0 +1,33 @@
+@startuml use_case
+skinparam defaultFontName Arial
+left to right direction
+skinparam packageStyle rectangle
+actor "HR-аналитик" as A
+actor "ИТ-специалист" as D
+actor "Инженер данных" as E
+
+rectangle "Система анализа факторов дохода" {
+  usecase "Загрузить новую порцию" as UC1
+  usecase "Проверить качество порции" as UC2
+  usecase "Пересчитать ключевые показатели" as UC3
+  usecase "Посмотреть отчёт о качестве" as UC4
+  usecase "Переобучить модель" as UC5
+  usecase "Посмотреть показатели\nи их динамику" as UC6
+  usecase "Посмотреть вклад факторов\n(нагрузки компонент)" as UC7
+  usecase "Сравнить сегменты\n(страна, роль, опыт)" as UC8
+  usecase "Получить оценку дохода\nпо профилю" as UC9
+  usecase "Проверить корректность\nпрофиля" as UC10
+}
+
+E --> UC1
+E --> UC4
+E --> UC5
+A --> UC6
+A --> UC7
+A --> UC8
+D --> UC9
+UC1 ..> UC2 : <<include>>
+UC1 ..> UC3 : <<include>>
+UC5 ..> UC3 : <<extend>>
+UC9 ..> UC10 : <<include>>
+@enduml

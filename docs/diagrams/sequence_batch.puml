@@ -1,0 +1,42 @@
+@startuml sequence_batch
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign left
+skinparam maxMessageSize 105
+hide footbox
+autonumber
+actor "Инженер данных" as E
+participant "Приём порций" as I
+database "Хранилище\n(DVC)" as S
+participant "Проверка\nкачества" as Q
+participant "Подготовка\nпризнаков" as F
+participant "ML-модуль" as M
+participant "Расчёт\nпоказателей" as K
+database "Витрина" as V
+participant "Панель" as P
+actor "HR-аналитик" as A
+
+E -> I : batch_NN.csv, dvc repro
+I -> S : сохранить порцию, md5, манифест
+I -> Q : таблица порции
+Q -> Q : требования DQ-1 ... DQ-9
+alt есть ошибки (схема, ResponseId, категории)
+  Q -> S : отчёт о проверке
+  Q --> E : порция отклонена
+else ошибок нет
+  Q -> F : записи после очистки, предупреждения
+  F -> S : загрузить параметры преобразований
+  S --> F : медианы, словари, индекс страны
+  F -> M : таблица признаков
+  M -> S : загрузить модель (scaler + PCA + регрессия)
+  M -> M : главные компоненты, прогноз log-дохода
+  M -> K : прогнозы, компоненты, фактический доход
+  K -> V : KPI с меткой порции
+  opt дрейф выше порога
+    K --> E : сигнал на переобучение
+  end
+end
+A -> P : открыть панель
+P -> V : запрос KPI по порциям
+V --> P : значения и динамика
+P --> A : графики и таблицы
+@enduml
