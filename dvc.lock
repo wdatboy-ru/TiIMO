@@ -1,0 +1,86 @@
+schema: '2.0'
+stages:
+  split:
+    cmd: python src/split_data.py
+    deps:
+    - path: data/raw/so_survey_2025.csv
+      hash: md5
+      md5: 7c8869f4cf7bb35135af0ab87d939e48
+      size: 140893245
+    - path: src/split_data.py
+      hash: md5
+      md5: f018b8c8c73315e2b21f46adcf6fa788
+      size: 1759
+    params:
+      params.yaml:
+        split:
+          seed: 42
+          initial_share: 0.6
+          n_batches: 4
+    outs:
+    - path: data/incoming
+      hash: md5
+      md5: d20227ebe019974c64a469896a2b5146.dir
+      size: 54977303
+      nfiles: 4
+    - path: data/initial
+      hash: md5
+      md5: 5973d42e9720769bb1d8c59c7169c6ae.dir
+      size: 82129815
+      nfiles: 1
+    - path: data/manifest.csv
+      hash: md5
+      md5: b1d43faeb5be5f4a82d4f47cb4edb7e0
+      size: 675
+  eda:
+    cmd: python src/eda_initial.py
+    deps:
+    - path: data/initial
+      hash: md5
+      md5: 5973d42e9720769bb1d8c59c7169c6ae.dir
+      size: 82129815
+      nfiles: 1
+    - path: src/eda.py
+      hash: md5
+      md5: 81879ee0a06e64e1d23a0954936b8a2e
+      size: 8610
+    - path: src/eda_initial.py
+      hash: md5
+      md5: 63d362e8f3fabceb80cb3328cdd6f0ae
+      size: 21644
+    outs:
+    - path: reports/eda_initial/figures
+      hash: md5
+      md5: e8c0d3b2e490845519b3ee5e4eae1ffb.dir
+      size: 839761
+      nfiles: 10
+    - path: reports/eda_initial/summary.json
+      hash: md5
+      md5: 0fc88c8f51f01df54806960815a921b4
+      size: 10828
+  quality:
+    cmd: python src/check_quality.py
+    deps:
+    - path: data/incoming
+      hash: md5
+      md5: d20227ebe019974c64a469896a2b5146.dir
+      size: 54977303
+      nfiles: 4
+    - path: data/initial
+      hash: md5
+      md5: 5973d42e9720769bb1d8c59c7169c6ae.dir
+      size: 82129815
+      nfiles: 1
+    - path: src/check_quality.py
+      hash: md5
+      md5: 04e8f08ea4e698c36fc840d18700b3f5
+      size: 4787
+    - path: src/eda_initial.py
+      hash: md5
+      md5: 63d362e8f3fabceb80cb3328cdd6f0ae
+      size: 21644
+    outs:
+    - path: reports/quality/quality_report.json
+      hash: md5
+      md5: 786b2172fc89885f0d0b410bb70ec6c6
+      size: 3567

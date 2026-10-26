@@ -1,0 +1,37 @@
+stages:
+  split:
+    cmd: python src/split_data.py
+    deps:
+      - data/raw/so_survey_2025.csv
+      - src/split_data.py
+    params:
+      - split
+    outs:
+      - data/initial
+      - data/incoming
+      - data/manifest.csv:
+          cache: false
+
+  eda:
+    cmd: python src/eda_initial.py
+    deps:
+      - data/initial
+      - src/eda.py
+      - src/eda_initial.py
+    outs:
+      - reports/eda_initial/figures:
+          cache: false
+    metrics:
+      - reports/eda_initial/summary.json:
+          cache: false
+
+  quality:
+    cmd: python src/check_quality.py
+    deps:
+      - data/initial
+      - data/incoming
+      - src/check_quality.py
+      - src/eda_initial.py
+    outs:
+      - reports/quality/quality_report.json:
+          cache: false

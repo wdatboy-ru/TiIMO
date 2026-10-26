@@ -7,3 +7,5 @@ pyarrow==21.0.0
 dvc==3.63.0
 jupyterlab==4.4.10
 pathspec==0.12.1
+pyyaml==6.0.3
+scipy==1.18.1

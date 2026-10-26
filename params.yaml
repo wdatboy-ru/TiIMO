@@ -1,0 +1,4 @@
+split:
+  seed: 42
+  initial_share: 0.6
+  n_batches: 4

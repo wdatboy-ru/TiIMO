@@ -1,0 +1,6 @@
+file,rows,md5,source
+data/initial/initial.csv,29515,f9726b4028dde68ed88f1bf14e9e607d,"Stack Overflow Developer Survey 2025 (ODbL), so_survey_2025.csv"
+data/incoming/batch_01.csv,4919,4d4dae96e35bcc64b0cf68d92fd2cfc5,"Stack Overflow Developer Survey 2025 (ODbL), so_survey_2025.csv"
+data/incoming/batch_02.csv,4919,0faf57886b26fe28a3a1560cc8096bd7,"Stack Overflow Developer Survey 2025 (ODbL), so_survey_2025.csv"
+data/incoming/batch_03.csv,4919,18a47793c43d6acdb40e21667eea4ee5,"Stack Overflow Developer Survey 2025 (ODbL), so_survey_2025.csv"
+data/incoming/batch_04.csv,4919,6407d74617e652f57eb0bafd2b9146a0,"Stack Overflow Developer Survey 2025 (ODbL), so_survey_2025.csv"
